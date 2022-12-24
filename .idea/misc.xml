@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/BosX.SULTAN4IK/AndroidStudioProjects/FoodApp/app/src/main/res/font/font.xml" value="0.2638888888888889" />
+        <entry key="..\:/Users/BosX.SULTAN4IK/AndroidStudioProjects/FoodApp/app/src/main/res/font/fonts.xml" value="0.2638888888888889" />
         <entry key="..\:/Users/BosX.SULTAN4IK/AndroidStudioProjects/FoodApp/app/src/main/res/layout/activity_main.xml" value="0.22735507246376813" />
         <entry key="..\:/Users/BosX.SULTAN4IK/AndroidStudioProjects/FoodApp/app/src/main/res/layout/fragment_categories.xml" value="0.22735507246376813" />
         <entry key="..\:/Users/BosX.SULTAN4IK/AndroidStudioProjects/FoodApp/app/src/main/res/layout/fragment_favorites.xml" value="0.22735507246376813" />
