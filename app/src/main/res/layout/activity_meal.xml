@@ -113,6 +113,7 @@
                 app:layout_constraintStart_toStartOf="@+id/tv_instruction"
                 app:layout_constraintTop_toBottomOf="@+id/tv_instruction"
                 android:layout_marginTop="@dimen/_2sdp"
+                android:layout_marginEnd="@dimen/_5sdp"
                 android:textColor="@color/black" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -123,7 +124,7 @@
         android:layout_width="@dimen/_40sdp"
         android:layout_height="@dimen/_40sdp"
         android:layout_gravity="bottom|center"
-        android:src="@drawable/ic_youtube"
+        android:src="@drawable/youtube"
         android:layout_marginBottom="@dimen/_10sdp"/>
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@id/progress_bar"

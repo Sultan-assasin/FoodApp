@@ -4,15 +4,18 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.sultan.foodapp.R
 import com.sultan.foodapp.databinding.ActivityMealBinding
+import com.sultan.foodapp.db.MealDatabase
 import com.sultan.foodapp.fragments.HomeFragment
 import com.sultan.foodapp.pojo.Meal
 import com.sultan.foodapp.viewModel.MealViewModel
+import com.sultan.foodapp.viewModel.MealViewModelFactory
 
 class MealActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMealBinding
@@ -27,7 +30,10 @@ class MealActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMealBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        mealMvvm = ViewModelProviders.of(this)[MealViewModel::class.java]
+        val mealDatabase = MealDatabase.getInstance(this)
+        val viewModelFactory = MealViewModelFactory(mealDatabase)
+
+        mealMvvm = ViewModelProvider(this,viewModelFactory)[MealViewModel::class.java]
 
 
         getMealInformationFromIntent()
@@ -37,7 +43,18 @@ class MealActivity : AppCompatActivity() {
         mealMvvm.getMealDetail(mealId)
         observeMealDetailsLiveData()
         onYoutubeImageClick()
+        onFavoriteClick()
     }
+
+    private fun onFavoriteClick() {
+        binding.btnAddToFavorites.setOnClickListener {
+            mealToSave?.let {
+                mealMvvm.insertMeal(it)
+                Toast.makeText(this,"Meal saved ${it.strMeal}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
 
     private fun onYoutubeImageClick() {
         binding.imgYoutube.setOnClickListener {
@@ -45,17 +62,17 @@ class MealActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
-
+    private var mealToSave:Meal? = null
     private fun observeMealDetailsLiveData() {
         mealMvvm.observeMealDetailLiveData().observe(this, object : Observer<Meal> {
             override fun onChanged(t: Meal?) {
                 onResponceCase()
                 val meal = t
-
+                mealToSave = meal
                 binding.tvCategory.text = "Category : ${meal!!.strCategory}"
-                binding.tvArea.text = "Area : ${meal!!.strArea}"
+                binding.tvArea.text = "Area : ${meal!!  .strArea}"
                 binding.tvInstructionSteps.text = meal!!.strInstructions
-                youtubeLink = meal!!.strYoutube
+                youtubeLink = meal!!.strYoutube.toString()
 
             }
 

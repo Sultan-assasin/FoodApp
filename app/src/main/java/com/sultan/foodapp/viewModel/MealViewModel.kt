@@ -4,15 +4,20 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.sultan.foodapp.db.MealDatabase
 import com.sultan.foodapp.pojo.Meal
 import com.sultan.foodapp.pojo.MealList
 import com.sultan.foodapp.retrofit.RetrofitInstance
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 
-class MealViewModel : ViewModel() {
+class MealViewModel(
+    private val mealDatabase : MealDatabase
+) : ViewModel() {
 private var mealDetailsLiveData = MutableLiveData<Meal>()
 
     fun getMealDetail(id:String){
@@ -35,5 +40,10 @@ private var mealDetailsLiveData = MutableLiveData<Meal>()
 
     fun observeMealDetailLiveData() : LiveData<Meal>{
         return mealDetailsLiveData
+    }
+    fun insertMeal(meal: Meal){
+        viewModelScope.launch {
+            mealDatabase.dao().upsert(meal)
+        }
     }
 }
