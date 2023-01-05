@@ -1,5 +1,6 @@
 package com.sultan.foodapp.adapters
 
+
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -8,7 +9,7 @@ import com.sultan.foodapp.databinding.CategoryItemBinding
 import com.sultan.foodapp.pojo.Category
 
 
-class CategoryAdapter() : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
+class CategoryAdapter : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
     private var categoriesList = ArrayList<Category>()
     var onItemClick : ((Category) -> Unit)? = null
 

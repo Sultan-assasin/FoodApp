@@ -106,11 +106,11 @@ class HomeFragment : Fragment() {
     }
 
     private fun observeCategoryLiveData() {
-        viewModel.observeCategoryLiveData().observe(viewLifecycleOwner, Observer { categories ->
+        viewModel.observeCategoryLiveData().observe(viewLifecycleOwner) { categories ->
             categories.forEach { _ ->
                 categoriesAdapter.setCategoryList(categories)
             }
-        })
+        }
     }
 
     private fun onPopularItemClick() {
