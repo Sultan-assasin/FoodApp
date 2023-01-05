@@ -1,11 +1,13 @@
 package com.sultan.foodapp.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import com.sultan.foodapp.activites.CategoryMealActivity
 import com.sultan.foodapp.activites.MainActivity
 import com.sultan.foodapp.adapters.CategoryAdapter
 import com.sultan.foodapp.databinding.FragmentCategoriesBinding
@@ -34,6 +36,17 @@ class CategoriesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         prepareRecyclerView()
         observeCategoriesAdapter()
+
+        onCategoryClick()
+    }
+
+    private fun onCategoryClick() {
+        categoriesAdapter.onItemClick = { category ->
+            val intent = Intent(activity, CategoryMealActivity::class.java)
+            intent.putExtra(HomeFragment.CATEGORY_NAME, category.strCategory)
+            startActivity(intent)
+
+        }
     }
 
     private fun observeCategoriesAdapter() {
