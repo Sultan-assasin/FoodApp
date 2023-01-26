@@ -1,78 +1,130 @@
 package com.sultan.foodapp.fragments
 
+import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.widget.addTextChangedListener
+import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
-import com.sultan.foodapp.activites.MainActivity
-import com.sultan.foodapp.adapters.MealsAdapter
+import com.bumptech.glide.Glide
+import com.sultan.foodapp.activites.MealActivity
+import com.sultan.foodapp.adapters.MealRecyclerAdapter
 import com.sultan.foodapp.databinding.FragmentSearchBinding
-import com.sultan.foodapp.viewModel.HomeViewModel
+import com.sultan.foodapp.fragments.HomeFragment.Companion.MEAL_ID
+import com.sultan.foodapp.fragments.HomeFragment.Companion.MEAL_NAME
+import com.sultan.foodapp.fragments.HomeFragment.Companion.MEAL_THUMB
+import com.sultan.foodapp.pojo.Meal
+import com.sultan.foodapp.viewModel.SearchViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
 class SearchFragment : Fragment() {
+    private lateinit var myAdapter: MealRecyclerAdapter
     private lateinit var binding: FragmentSearchBinding
-    private lateinit var viewModel: HomeViewModel
-    private lateinit var searchRecyclerViewAdapter: MealsAdapter
+    private lateinit var searchMvvm: SearchViewModel
+    private var mealId = ""
+    private var mealStr = ""
+    private var mealThub = ""
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        viewModel = (activity as MainActivity).viewModel
-
+        myAdapter = MealRecyclerAdapter()
+        searchMvvm = ViewModelProviders.of(this)[SearchViewModel::class.java]
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentSearchBinding.inflate(inflater)
+        binding = FragmentSearchBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        prepareRecyclerView()
 
-        binding.imageSearch.setOnClickListener { searchMeals() }
-        observeMealsLiveData()
+        onSearchClick()
+        observeSearchLiveData()
+        setOnMealCardClick()
 
         var searchJob: Job? = null
-        binding.edSearchBox.addTextChangedListener { searchQuery ->
+        binding.edSearch.afterTextChanged{ searchQuery ->
             searchJob?.cancel()
             searchJob = lifecycleScope.launch {
                 delay(500)
-                viewModel.searchMeals(searchQuery.toString())
+                searchMvvm.searchMealDetail(searchQuery,context)
             }
         }
     }
 
-    private fun observeMealsLiveData() {
-        viewModel.observeSearchedLiveData().observe(viewLifecycleOwner) { mealList ->
-            searchRecyclerViewAdapter.differ.submitList(mealList)
+    private fun setOnMealCardClick() {
+        binding.searchedMealCard.setOnClickListener {
+            val intent = Intent(context, MealActivity::class.java)
+
+            intent.putExtra(MEAL_ID, mealId)
+            intent.putExtra(MEAL_NAME, mealStr)
+            intent.putExtra(MEAL_THUMB, mealThub)
+
+            startActivity(intent)
+
+
         }
     }
 
-    private fun searchMeals() {
-        val searchQuery = binding.edSearchBox.text.toString()
-        if (searchQuery.isNotEmpty()) {
-            viewModel.searchMeals(searchQuery)
+    private fun onSearchClick() {
+        binding.icSearch.setOnClickListener {
+            searchMvvm.searchMealDetail(binding.edSearch.text.toString(),context)
+
         }
     }
 
-    private fun prepareRecyclerView() {
-        searchRecyclerViewAdapter = MealsAdapter()
-        binding.rvSearchMeals.apply {
-            layoutManager = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
-            adapter = searchRecyclerViewAdapter
-        }
+    private fun observeSearchLiveData() {
+        searchMvvm.observeSearchLiveData()
+            .observe(viewLifecycleOwner, object : Observer<Meal> {
+                override fun onChanged(t: Meal?) {
+                    if (t == null) {
+                        Toast.makeText(context, "No such a meal", Toast.LENGTH_SHORT).show()
+                    } else {
+                        binding.apply {
+
+                            mealId = t.idMeal
+                            mealStr = t.strMeal.toString()
+                            mealThub = t.strMealThumb.toString()
+
+                            Glide.with(context!!.applicationContext)
+                                .load(t.strMealThumb)
+                                .into(imgSearchedMeal)
+
+                            tvSearchedMeal.text = t.strMeal
+                            searchedMealCard.visibility = View.VISIBLE
+                        }
+                    }
+                }
+            })
     }
+    fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
+        this.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+            override fun afterTextChanged(editable: Editable?) {
+                afterTextChanged.invoke(editable.toString())
+            }
+        })
+    }
+
 
 }
