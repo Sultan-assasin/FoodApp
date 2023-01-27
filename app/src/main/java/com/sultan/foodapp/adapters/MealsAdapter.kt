@@ -11,6 +11,7 @@ import com.sultan.foodapp.pojo.Meal
 
 class MealsAdapter :
     RecyclerView.Adapter<MealsAdapter.FavoritesMealsAdapterViewHolder>() {
+    var onItemClick: ((Meal) -> Unit)? = null
 
     inner class FavoritesMealsAdapterViewHolder(val binding: MealItemBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -46,7 +47,12 @@ class MealsAdapter :
         Glide.with(holder.itemView)
             .load(meal.strMealThumb)
             .into(holder.binding.imgMeal)
-            holder.binding.tvMealName.text = meal.strMeal
+        holder.binding.tvMealName.text = meal.strMeal
+
+        holder.itemView.setOnClickListener {
+            onItemClick!!.invoke(meal)
+        }
+
     }
 
     override fun getItemCount(): Int {
