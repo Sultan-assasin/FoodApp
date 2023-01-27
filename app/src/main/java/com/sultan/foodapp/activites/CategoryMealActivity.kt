@@ -1,5 +1,6 @@
 package com.sultan.foodapp.activites
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
@@ -27,6 +28,7 @@ class CategoryMealActivity : AppCompatActivity() {
 
         }
         prepareRecyclerView()
+        categoryClick()
     }
 
     private fun prepareRecyclerView() {
@@ -34,6 +36,16 @@ class CategoryMealActivity : AppCompatActivity() {
         binding.rvMeals.apply {
             layoutManager = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
             adapter = categoryMealsAdapter
+        }
+    }
+
+    private fun categoryClick() {
+        val intent = Intent(applicationContext, MealActivity::class.java)
+        categoryMealsAdapter.onItemClick = { meal ->
+            intent.putExtra(HomeFragment.MEAL_ID, meal.idMeal)
+            intent.putExtra(HomeFragment.MEAL_NAME, meal.strMeal)
+            intent.putExtra(HomeFragment.MEAL_THUMB, meal.strMealThumb)
+            startActivity(intent)
         }
     }
 }
