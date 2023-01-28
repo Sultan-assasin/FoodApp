@@ -6,14 +6,14 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.sultan.foodapp.databinding.MealItemBinding
+import com.sultan.foodapp.databinding.MealItemFragmentBinding
 import com.sultan.foodapp.pojo.Meal
 
-class MealsAdapter :
-    RecyclerView.Adapter<MealsAdapter.FavoritesMealsAdapterViewHolder>() {
+class FavoritesAdapter() :
+    RecyclerView.Adapter<FavoritesAdapter.FavoritesMealsAdapterViewHolder2>() {
     var onItemClick: ((Meal) -> Unit)? = null
 
-    inner class FavoritesMealsAdapterViewHolder(val binding: MealItemBinding) :
+    inner class FavoritesMealsAdapterViewHolder2(val binding: MealItemFragmentBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     private val diffUtil = object : DiffUtil.ItemCallback<Meal>() {
@@ -31,9 +31,9 @@ class MealsAdapter :
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): FavoritesMealsAdapterViewHolder {
-        return FavoritesMealsAdapterViewHolder(
-            MealItemBinding.inflate(
+    ): FavoritesMealsAdapterViewHolder2 {
+        return FavoritesMealsAdapterViewHolder2(
+            MealItemFragmentBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -42,7 +42,10 @@ class MealsAdapter :
     }
 
 
-    override fun onBindViewHolder(holder: FavoritesMealsAdapterViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: FavoritesAdapter.FavoritesMealsAdapterViewHolder2,
+        position: Int
+    ) {
         val meal = differ.currentList[position]
         Glide.with(holder.itemView)
             .load(meal.strMealThumb)
@@ -52,7 +55,6 @@ class MealsAdapter :
         holder.itemView.setOnClickListener {
             onItemClick!!.invoke(meal)
         }
-
     }
 
     override fun getItemCount(): Int {

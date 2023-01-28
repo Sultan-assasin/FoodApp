@@ -12,14 +12,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.sultan.foodapp.activites.MainActivity
 import com.sultan.foodapp.activites.MealActivity
-import com.sultan.foodapp.adapters.MealsAdapter
+import com.sultan.foodapp.adapters.FavoritesAdapter
 import com.sultan.foodapp.databinding.FragmentFavoritesBinding
 import com.sultan.foodapp.viewModel.HomeViewModel
 
 
 class FavoritesFragment : Fragment() {
     private lateinit var binding: FragmentFavoritesBinding
-    private lateinit var favoritesAdapter: MealsAdapter
+    private lateinit var favoritesAdapter: FavoritesAdapter
     private lateinit var viewModel: HomeViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,9 +48,9 @@ class FavoritesFragment : Fragment() {
     }
 
     private fun prepareRecyclerView() {
-        favoritesAdapter = MealsAdapter()
+        favoritesAdapter = FavoritesAdapter()
         binding.favRecView.apply {
-            layoutManager = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
+            layoutManager = GridLayoutManager(context, 1, GridLayoutManager.VERTICAL, false)
             adapter = favoritesAdapter
         }
     }
