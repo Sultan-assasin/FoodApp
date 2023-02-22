@@ -45,17 +45,17 @@ class HomeViewModel(
 
     fun getPopularItems() {
         RetrofitInstance.api.getPopularItems("SeaFood")
-            .enqueue(object : Callback<MealsByCarygoryList> {
+            .enqueue(object : Callback<MealsByCategoryList> {
                 override fun onResponse(
-                    call: Call<MealsByCarygoryList>,
-                    response: Response<MealsByCarygoryList>
+                    call: Call<MealsByCategoryList>,
+                    response: Response<MealsByCategoryList>
                 ) {
                     if (response.body() != null) {
                         popularItemsLiveData.value = response.body()!!.meals
                     }
                 }
 
-                override fun onFailure(call: Call<MealsByCarygoryList>, t: Throwable) {
+                override fun onFailure(call: Call<MealsByCategoryList>, t: Throwable) {
                     Log.d("HomeFragment", t.message.toString())
                 }
 
@@ -112,6 +112,11 @@ class HomeViewModel(
     fun deleteMeal( meal: Meal){
         viewModelScope.launch {
             mealDatabase.dao().delete(meal)
+        }
+    }
+    fun clean(list: MutableList<Meal>){
+        viewModelScope.launch {
+            mealDatabase.dao().clean(list)
         }
     }
     fun insertMeal(meal: Meal){

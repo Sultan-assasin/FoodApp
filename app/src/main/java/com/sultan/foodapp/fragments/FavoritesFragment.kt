@@ -5,11 +5,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.sultan.foodapp.R
 import com.sultan.foodapp.activites.MainActivity
 import com.sultan.foodapp.activites.MealActivity
 import com.sultan.foodapp.adapters.MealsAdapter
@@ -45,12 +48,31 @@ class FavoritesFragment : Fragment() {
 
         itemTouchHelp()
         favoritesClick()
+
+        btnBuy()
+    }
+
+    private fun btnBuy() {
+        binding.buttonClick.setOnClickListener {
+            if(favoritesAdapter.differ.currentList.isEmpty()){
+                Toast.makeText(activity, "Add products to buy", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                val list = favoritesAdapter.differ.currentList
+                viewModel.clean(list) // and not forget this code
+                Toast.makeText(activity, "Successfully bought", Toast.LENGTH_SHORT).show()
+                favoritesAdapter.differ.submitList(emptyList()) // this code helped to clean adapter
+                openMyFragment()
+            }
+
+        }
     }
 
     private fun prepareRecyclerView() {
         favoritesAdapter = MealsAdapter()
         binding.favRecView.apply {
-            layoutManager = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
+//            layoutManager = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
+            layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
             adapter = favoritesAdapter
         }
     }
@@ -95,5 +117,13 @@ class FavoritesFragment : Fragment() {
             }
         }
         ItemTouchHelper(itemTouchHelper).attachToRecyclerView(binding.favRecView)
+    }
+
+    private fun openMyFragment() {
+        val fragment = AddressFragment()
+        val transaction = fragmentManager?.beginTransaction()
+        transaction?.replace(R.id.host_fragment, fragment)
+        transaction?.addToBackStack(null)
+        transaction?.commit()
     }
 }

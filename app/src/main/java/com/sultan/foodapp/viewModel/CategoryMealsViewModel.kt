@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.sultan.foodapp.pojo.MealsByCarygoryList
+import com.sultan.foodapp.pojo.MealsByCategoryList
 import com.sultan.foodapp.pojo.MealsByCategory
 import com.sultan.foodapp.retrofit.RetrofitInstance
 import retrofit2.Call
@@ -15,17 +15,17 @@ class CategoryMealsViewModel : ViewModel(){
     val mealsLiveData = MutableLiveData<List<MealsByCategory>>()
     fun getMealsByCategory(categoryName : String){
         RetrofitInstance.api.getMealsByCategory(categoryName).enqueue(object :
-            Callback<MealsByCarygoryList>{
+            Callback<MealsByCategoryList>{
             override fun onResponse(
-                call: Call<MealsByCarygoryList>,
-                response: Response<MealsByCarygoryList>
+                call: Call<MealsByCategoryList>,
+                response: Response<MealsByCategoryList>
             ) {
                 response.body()?.let { mealList ->
                     mealsLiveData.postValue(mealList.meals)
                 }
             }
 
-            override fun onFailure(call: Call<MealsByCarygoryList>, t: Throwable) {
+            override fun onFailure(call: Call<MealsByCategoryList>, t: Throwable) {
                 Log.d("CategoryMealsViewModel", t.message.toString())
             }
 

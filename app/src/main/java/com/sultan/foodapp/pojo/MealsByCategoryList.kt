@@ -1,5 +1,5 @@
 package com.sultan.foodapp.pojo
 
-data class MealsByCarygoryList(
+data class MealsByCategoryList(
     val meals: List<MealsByCategory>
 )
